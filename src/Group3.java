@@ -1,6 +1,4 @@
 package src;
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -52,44 +50,68 @@ public class Group3 {
         return input.toArray(new String[0]);
     }
 
-    // Method to find the sum of prime factors of a number 'n'
+    /**
+     * Computes and stores the sum of prime factors for the given number 'n'.
+     * 
+     * @param n    The number for which to calculate the sum of prime factors.
+     * @param temp A HashMap to store the sum of prime factors for each number.
+     */
     private static void sumPrimeFactors(int n, HashMap<Integer, Integer> temp) {
-        int sum = 0;
-        int originalN = n;
-        // Loop up to the square root of 'n'
+        // Check if we already computed the sum of prime factors for this number
+        if (temp.containsKey(n)) {
+            return;
+        }
+        int sum = 0; // Variable to hold the sum of prime factors
+        int originalN = n; // Store the original value of 'n'
+        
+        // Loop to find prime factors up to the square root of 'n'
         for (int i = 2; i <= Math.sqrt(n); i++) {
-            if (n % i == 0) {
-                sum += i;
-                while (n % i == 0) {
+            if (n % i == 0) { // If 'i' is a factor of 'n'
+                sum += i; // Add 'i' to the sum
+                while (n % i == 0) { // Remove all instances of 'i' from 'n'
                     n /= i;
                 }
             }
         }
+        
+        // If 'n' is greater than 1, then it is a prime number and a factor of itself
         if (n > 1) {
             sum += n;
         }
+        
+        // Store the computed sum in the HashMap
         temp.put(originalN, sum);
     }
 
-    // Method to sort the array based on the sum of prime factors
+    /**
+     * The sorting is done in ascending order of the sum of prime factors.
+     * If two numbers have the same sum, they are sorted in descending order of their values.
+     */
     private static void sort(String[] toSort) {
-        HashMap<Integer, Integer> temp = new HashMap<>();
-        // Pre-compute the sum of prime factors for all numbers
+        HashMap<Integer, Integer> temp = new HashMap<>(); // HashMap to hold the sum of prime factors
+        
+        // Pre-calculate the sum of prime factors for each number in the array
         for (String s : toSort) {
             int num = Integer.parseInt(s);
             sumPrimeFactors(num, temp);
         }
-        // Sort using the pre-computed values
+        
         Arrays.sort(toSort, (a, b) -> {
             int numA = Integer.parseInt(a);
             int numB = Integer.parseInt(b);
+            
+            // Compare based on the sum of prime factors
             int compare = temp.get(numA) - temp.get(numB);
+            
+            // If the sums are equal, compare based on the actual number values
             if (compare == 0) {
                 return numB - numA;
             }
+            
             return compare;
         });
     }
+
 
     private static void writeOutResult(String[] sorted, String outputFilename) throws FileNotFoundException {
         PrintWriter out = new PrintWriter(outputFilename);
@@ -99,3 +121,6 @@ public class Group3 {
         out.close();
     }
 }
+
+
+
